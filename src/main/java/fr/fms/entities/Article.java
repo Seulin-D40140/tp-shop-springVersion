@@ -8,8 +8,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
-import org.springframework.core.style.ToStringCreator;
-
 
 @Entity
 public class Article implements Serializable
@@ -50,6 +48,6 @@ public class Article implements Serializable
 
 	public String toString()
 	{
-		return "article brand : " + this.brand + " ,  model : " +  this.description + " , prix : " + this.price;
+		return this.id+"     "+this.description+"             "+ this.brand+"    "+ this.price+"    "+this.category;
 	}
 }

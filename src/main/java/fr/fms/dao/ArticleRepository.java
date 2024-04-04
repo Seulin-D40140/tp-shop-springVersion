@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import fr.fms.entities.Article;
+import fr.fms.entities.Category;
 
 public interface ArticleRepository  extends JpaRepository<Article,Long>
 {
@@ -20,10 +21,11 @@ public interface ArticleRepository  extends JpaRepository<Article,Long>
 	@Query("select A from Article A where A.brand like %:x% and A.price > :y")
 	public List<Article> searchArticle(@Param("x") String brand , @Param("y")double price);
 	
-	public List<Article> findByCategoryId(int categoryId);
+	public List<Article> findByCategoryId(Long categoryId);
 	
 	//exo 1.2
 	public List<Article> findByDescription(String description);
+	public List<Article> findById(long id);
 	public List<Article> findAll();
 	
 	//exo 1.3

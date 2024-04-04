@@ -43,4 +43,9 @@ public class Category implements Serializable
 	{
 		return name;
 	}
+	
+	public String toString()
+	{
+		return this.id +" " + this.name;
+	}
 }
