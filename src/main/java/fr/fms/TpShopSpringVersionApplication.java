@@ -147,7 +147,12 @@ public class TpShopSpringVersionApplication implements CommandLineRunner
 						categoryRepository.deleteById(removeCat);
 					break;
 				case 10 :
-					
+						System.out.println("entrez l'id de la category a modifier : ");
+						Long catUpdateLong = scan.nextLong();
+						scan.nextLine();
+						System.out.println("entrez la nouvelle valeur : ");
+						String catUpdatestString = scan.nextLine();
+						categoryRepository.update(catUpdatestString, catUpdateLong);
 					break;
 				case 11 :
 						System.out.println("-----------------------------------------------------------------------------");
