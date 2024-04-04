@@ -9,17 +9,17 @@ import fr.fms.buisness.buisnessArticle;
 import fr.fms.dao.ArticleRepository;
 import fr.fms.dao.CategoryRepository;
 import fr.fms.entities.Article;
-import fr.fms.entities.Category;
+import fr.fms.entities.Category;import fr.fms.dao.ProductRepository;
 
 @SpringBootApplication
 public class TpShopSpringVersionApplication implements CommandLineRunner
 {
-
+	@Autowired
+	private ProductRepository productRepository;
 	@Autowired
 	private CategoryRepository categoryRepository;
 	@Autowired
 	private ArticleRepository articleRepository;
-	
 	
 	public static void main(String[] args) 
 	{
@@ -82,6 +82,61 @@ public class TpShopSpringVersionApplication implements CommandLineRunner
 						System.out.println("----------------------------------------------------------------------------- \n");
 					break;
 				case 2 :
+						Boolean paginationStringOut = false;
+						int pagesevenfive = 1;
+						while(paginationStringOut != true)
+						{
+							while(pagesevenfive == 1 && paginationStringOut != true)
+							{
+								System.out.println("-----------------------------------------------------------------------------");
+								System.out.println("EXIT pour sortir \n" +
+												   "PREV pour page precedente \n" +
+												   "NEXT pour page suivante \n" +
+												   "PAGE puis 7 pour afficher 7 articles par page ");
+								System.out.println("-----------------------------------------------------------------------------");
+								System.out.println("-----------------------------------------------------------------------------");
+								for (Article art : productRepository.findAll(ProductRepository.pageableof5))
+								{
+									System.out.println(art);
+								}
+								System.out.println("-----------------------------------------------------------------------------");
+								System.out.println("tapez ici : ");
+								String pageSeven = scan.nextLine();
+								if(Integer.parseInt(pageSeven) == 7)
+								{
+									pagesevenfive = 2;
+								}
+								else if (pageSeven.equals("EXIT")) 
+								{
+									paginationStringOut = true;
+								}
+							}
+							while(pagesevenfive == 2 && paginationStringOut != true)
+							{
+								System.out.println("-----------------------------------------------------------------------------");
+								System.out.println("EXIT pour sortir \n" +
+												   "PREV pour page precedente \n" +
+												   "NEXT pour page suivante \n" +
+												   "PAGE puis 5 pour afficher 5 articles par page ");
+								System.out.println("-----------------------------------------------------------------------------");
+								System.out.println("-----------------------------------------------------------------------------");
+								for (Article art : productRepository.findAll(ProductRepository.pageableOf7))
+								{
+									System.out.println(art);
+								}
+								System.out.println("-----------------------------------------------------------------------------");
+								System.out.println("tapez ici : ");
+								String pageSeven = scan.nextLine();
+								if(Integer.parseInt(pageSeven) == 5)
+								{
+									pagesevenfive = 1;
+								}
+								else if (pageSeven.equals("EXIT")) 
+								{
+									paginationStringOut = true;
+								}
+							}
+						}
 						
 					break;
 				case 3 :
@@ -185,4 +240,5 @@ public class TpShopSpringVersionApplication implements CommandLineRunner
 			}
 		}
 	}
+	
 }

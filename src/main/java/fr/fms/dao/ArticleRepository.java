@@ -1,5 +1,6 @@
 package fr.fms.dao;
 
+import java.awt.print.Pageable;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -10,8 +11,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import fr.fms.entities.Article;
-import fr.fms.entities.Category;
-
 public interface ArticleRepository  extends JpaRepository<Article,Long>
 {
 	public List<Article> findByBrand(String brand);
@@ -27,6 +26,7 @@ public interface ArticleRepository  extends JpaRepository<Article,Long>
 	public List<Article> findByDescription(String description);
 	public List<Article> findById(long id);
 	public List<Article> findAll();
+	
 	
 	//exo 1.3
 	public List<Article> findByBrandAndDescriptionContains(String brand , String description); 
