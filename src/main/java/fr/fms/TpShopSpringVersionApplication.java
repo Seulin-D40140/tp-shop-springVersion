@@ -84,11 +84,7 @@ public class TpShopSpringVersionApplication implements CommandLineRunner
 			{								
 				case 1 ://afficher tout les articles
 						System.out.println("-----------------------------------------------------------------------------");
-						System.out.println(tableHead);
-						for ( Article art : articleRepository.findAll())
-						{
-							System.out.printf("%s  %13s  %18s  %14s  %18s %n", art.getId() , art.getDescription() , art.getBrand() , art.getPrice() , art.getCategory());
-						}
+						displayArticleFunction(articleRepository.findAll());
 						System.out.println("----------------------------------------------------------------------------- \n");
 					break;
 				case 2 ://afficher articles par pagination
@@ -140,9 +136,7 @@ public class TpShopSpringVersionApplication implements CommandLineRunner
 						System.out.println("entrez l'id de l'article que vous voulez voir : ");
 						String articleChoice = scan.nextLine();
 						System.out.println("-----------------------------------------------------------------------------");
-						System.out.println("voici l'article selectionner : \n"+
-										   "ID     DESCRIPTION     MARQUE     PRIX     CATEGORY \n"
-											+articleRepository.findById(Integer.parseInt(articleChoice)));
+						displayArticleFunction(articleRepository.findById(Integer.parseInt(articleChoice)));
 						System.out.println("----------------------------------------------------------------------------- \n");
 					break;
 				case 5 ://supprimer un article par son id
@@ -208,11 +202,7 @@ public class TpShopSpringVersionApplication implements CommandLineRunner
 						scan.nextLine();
 						
 						System.out.println("\n -----------------------------------------------------------------------------");
-						System.out.println(tableHead);
-						for( Article article : articleRepository.findByCategoryId(searchCat))
-						{
-							System.out.printf("%s  %13s  %18s  %14s  %18s %n", article.getId() , article.getDescription() , article.getBrand() , article.getPrice() , article.getCategory());
-						}
+						displayArticleFunction(articleRepository.findByCategoryId(searchCat));
 						System.out.println("----------------------------------------------------------------------------- \n");
 					break;
 				case 12 : // retour menu principal
@@ -227,6 +217,7 @@ public class TpShopSpringVersionApplication implements CommandLineRunner
 			}
 		}
 	}
+//****************************************************************************************************************************************************
 	public void displayMenuFuction(int nb) // fonction affichage du menu pagination
 	{
 		System.out.println("-----------------------------------------------------------------------------\n" +
@@ -297,5 +288,14 @@ public class TpShopSpringVersionApplication implements CommandLineRunner
 			System.out.printf(" %s %20s %n",cat.getId() , cat.getName());
 		}
 		System.out.println("----------------------------------------------------------------------------- ");
+	}
+	
+	public void displayArticleFunction(List<Article> articlelist)
+	{
+		System.out.printf("%s  %17s  %14s  %12s  %12s %n", "ID", "DESCRIPTION" , "MARQUE", "PRIX" , "CAT");
+		for( Article article : articlelist)
+		{
+			System.out.printf("%s  %13s  %18s  %14s  %18s %n", article.getId() , article.getDescription() , article.getBrand() , article.getPrice() , article.getCategory());
+		}
 	}
 }
