@@ -1,6 +1,4 @@
 package fr.fms;
-
-
 import java.util.List;
 import java.util.Scanner;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,9 +37,6 @@ public class TpShopSpringVersionApplication implements CommandLineRunner
 	//@Override
 	public void run(String... args) throws Exception
 	{  
-		String tableHead = String.format("%s  %17s  %14s  %12s  %12s ", "ID", "DESCRIPTION" , "MARQUE", "PRIX" , "CAT");
-//		buisnessArticle buisnessA = new buisnessArticle();
-		
 		Category smartphone = categoryRepository.save(new Category("smartphone"));
 		Category tablet = categoryRepository.save(new Category("tablet"));
 		Category pc = categoryRepository.save(new Category("pc"));
@@ -54,7 +49,6 @@ public class TpShopSpringVersionApplication implements CommandLineRunner
 		articleRepository.save( new Article("s21" , "Samsung" , 1000 , smartphone));
 		articleRepository.save( new Article("predator" , "msi" , 2600 , pc));
 		articleRepository.save( new Article("galaxy tab" , "Samsung" , 650 , tablet));
-		
 		
 		boolean leave = false;
 		
@@ -79,166 +73,210 @@ public class TpShopSpringVersionApplication implements CommandLineRunner
 							   "12 : sortir du programme \n");
 			
 			String choice = scan.nextLine();
+			boolean isNumber = choice.chars().allMatch(Character::isDigit);
 			
-			switch (Integer.parseInt(choice)) 
-			{								
-				case 1 ://afficher tout les articles
-						System.out.println("-----------------------------------------------------------------------------");
-						displayArticleFunction(articleRepository.findAll());
-						System.out.println("----------------------------------------------------------------------------- \n");
-					break;
-				case 2 ://afficher articles par pagination
-						while(paginationStringOut != true)
-						{									
-							Pageable numByPage = PageRequest.of(pageNb, sizePage);
+			if(isNumber)
+			{
+				switch (Integer.parseInt(choice)) 
+				{								
+					case 1 ://afficher tout les articles
+							System.out.println("-----------------------------------------------------------------------------");
+							displayArticleFunction(articleRepository.findAll());
+							System.out.println("----------------------------------------------------------------------------- \n");
+						break;
+					case 2 ://afficher articles par pagination
+							while(paginationStringOut != true)
+							{									
+								Pageable numByPage = PageRequest.of(pageNb, sizePage);
+								
+								if(pagesevenfive == 1 && paginationStringOut != true)
+								{		
+									System.out.println("-----------------------------------------------------------------------------");//afficher artitcles 5 par page
+									displayMenuFuction(5);
+									System.out.println("----------------------------------------------------------------------------- \n");
+									
+									System.out.println("*****************************************************************************");
+									System.out.printf("%s  %17s  %14s  %12s  %12s \n", "ID", "DESCRIPTION" , "MARQUE", "PRIX" , "CAT");
+									displayTableFuction(productRepository.findAll(numByPage));
+									System.out.println("----------------------------------------------------------------------------- \n");
+									
+									System.out.println("tapez ici : ");
+									String pageSeven = scan.nextLine();
+									
+									choiceUserPaginationFunction( pageSeven , 7 , 2 , numByPage);
+								}
+								else if(pagesevenfive == 2 && paginationStringOut != true)
+								{    
+									System.out.println("-----------------------------------------------------------------------------");//afficher articles 7 par page
+									displayMenuFuction(7);
+									System.out.println("----------------------------------------------------------------------------- \n");
+									
+									System.out.println("*****************************************************************************");
+									System.out.printf("%s  %17s  %14s  %12s  %12s \n", "ID", "DESCRIPTION" , "MARQUE", "PRIX" , "CAT");
+									displayTableFuction(productRepository.findAll(numByPage));
+									System.out.println("-----------------------------------------------------------------------------\n");
+									
+									System.out.println("tapez ici votre choix ici : ");
+									String pageSeven = scan.nextLine();
+									
+									choiceUserPaginationFunction( pageSeven , 5 , 1 , numByPage);
+								}
+							}
+						break;
+					case 3 : //ajouter un article
+							System.out.println("pour ajouter un article entrez la description : ");
+							String descAdd = scan.nextLine();
+							System.out.println("entrez la marque : ");
+							String brandAdd = scan.nextLine();
+							System.out.println("entrez le prix : ");
+							String priceAdd = scan.nextLine();
+							System.out.println("entrez la category : ");
+							String catAdd = scan.nextLine();
+							Category catchoice = catAdd.equals("pc") ? pc : catAdd.equals("tablet") ? tablet : catAdd.equals("Smartphone") ? smartphone : categoryRepository.save(new Category(catAdd));;
+							articleRepository.save( new Article(descAdd , brandAdd , Integer.parseInt(priceAdd) , catchoice));
+						break;
+					case 4 ://afficher un seul article par son id
+							System.out.println("entrez l'id de l'article que vous voulez voir : ");
+							String articleChoice = scan.nextLine();
+							System.out.println("-----------------------------------------------------------------------------");
+							displayArticleFunction(articleRepository.findById(Integer.parseInt(articleChoice)));
+							System.out.println("----------------------------------------------------------------------------- \n");
+						break;
+					case 5 ://supprimer un article par son id
+							System.out.println("entrez l'id de l'article que vous voulez supprimer : ");
+							String deleteChoice = scan.nextLine();
 							
-							if(pagesevenfive == 1 && paginationStringOut != true)
-							{		
-								System.out.println("-----------------------------------------------------------------------------");//afficher artitcles 5 par page
-								displayMenuFuction(5);
-								System.out.println("----------------------------------------------------------------------------- \n");
-								
-								System.out.println(tableHead);
-								displayTableFuction(productRepository.findAll(numByPage));
-								System.out.println("tapez ici : ");
-								String pageSeven = scan.nextLine();
-								
-								choiceUserPaginationFunction( pageSeven , 7 , 2 , numByPage);
+							System.out.println("-----------------------------------------------------------------------------");
+							displayArticleFunction(articleRepository.findById(Integer.parseInt(deleteChoice)));
+							System.out.println("----------------------------------------------------------------------------- \n");
+							System.out.println("etes vous sur de vouloir supprimer cette article ? ");
+							String confirmChoice = scan.nextLine();
+							while(!confirmChoice.equals("oui") && !confirmChoice.equals("non"))
+							{
+								System.out.println("etes vous sur de vouloir supprimer cette article ? ");
+								confirmChoice = scan.nextLine();
 							}
-							else if(pagesevenfive == 2 && paginationStringOut != true)
-							{    
-								System.out.println("-----------------------------------------------------------------------------");//afficher articles 7 par page
-								displayMenuFuction(7);
-								System.out.println("----------------------------------------------------------------------------- \n");
-								
-								System.out.println(tableHead);
-								displayTableFuction(productRepository.findAll(numByPage));
-								System.out.println("tapez ici : ");
-								String pageSeven = scan.nextLine();
-								
-								choiceUserPaginationFunction( pageSeven , 5 , 1 , numByPage);
+							if(confirmChoice.equals("oui"))
+							{
+								articleRepository.deleteById(Integer.parseInt(deleteChoice));
+								System.out.println("article supprimer");
 							}
-						}
-					break;
-				case 3 : //ajouter un article
-						System.out.println("pour ajouter un article entrez la description : ");
-						String descAdd = scan.nextLine();
-						System.out.println("entrez la marque : ");
-						String brandAdd = scan.nextLine();
-						System.out.println("entrez le prix : ");
-						String priceAdd = scan.nextLine();
-						System.out.println("entrez la category : ");
-						String catAdd = scan.nextLine();
-						Category catchoice = catAdd.equals("pc") ? pc : catAdd.equals("tablet") ? tablet : catAdd.equals("Smartphone") ? smartphone : categoryRepository.save(new Category(catAdd));;
-						articleRepository.save( new Article(descAdd , brandAdd , Integer.parseInt(priceAdd) , catchoice));
-					break;
-				case 4 ://afficher un seul article par son id
-						System.out.println("entrez l'id de l'article que vous voulez voir : ");
-						String articleChoice = scan.nextLine();
-						System.out.println("-----------------------------------------------------------------------------");
-						displayArticleFunction(articleRepository.findById(Integer.parseInt(articleChoice)));
-						System.out.println("----------------------------------------------------------------------------- \n");
-					break;
-				case 5 ://supprimer un article par son id
-						System.out.println("entrez l'id de l'article que vous voulez supprimer : ");
-						String deleteChoice = scan.nextLine();
-						articleRepository.deleteById(Integer.parseInt(deleteChoice));
-					break;
-				case 6 ://modification d'un article par son id
-						System.out.println("entrez l'id de l'article a modifier : ");
-						long idUpdate = scan.nextLong();
-						System.out.println("entrez la description : ");
-						scan.nextLine();
-						String descUpdate = scan.nextLine();
-						System.out.println("entrez la marque : ");
-						String brandUpdate = scan.nextLine();
-						System.out.println("entrez le prix : ");
-						String priceUpdate = scan.nextLine();
-						articleRepository.update(descUpdate, brandUpdate, Integer.parseInt(priceUpdate), idUpdate);
-					break;
-				case 7 ://ajout d'une category
-						System.out.println("entrez le nom de la nouvelle category : ");
-						String newCat = scan.nextLine();
-						categoryRepository.save(new Category(newCat));
-					break;
-				case 8 ://afficher une seul categorie par son nom 
-						System.out.println("entrez le nom de la category : ");
-						String catView = scan.nextLine();
-						
-						System.out.println("-----------------------------------------------------------------------------");
-						System.out.println(categoryRepository.findByName(catView));
-						System.out.println("----------------------------------------------------------------------------- \n");
-					break;
-				case 9 ://suppression d'une categorie par son id
-						System.out.println("-----------------------------------------------------------------------------");
-						displayCategoryFunction(categoryRepository.findAll());
-						System.out.println("----------------------------------------------------------------------------- \n");
-						
-						System.out.println("entrez l'id de la category a supprimer : ");
-						Long removeCat = scan.nextLong();
-						scan.nextLine();
-						categoryRepository.deleteById(removeCat);
-					break;
-				case 10 ://mise a jour d'une category par son id
-						System.out.println("----------------------------------------------------------------------------- ");
-						displayCategoryFunction(categoryRepository.findAll());
-						System.out.println("----------------------------------------------------------------------------- \n");
-						
-						System.out.println("entrez l'id de la category a modifier : ");
-						Long catUpdateLong = scan.nextLong();
-						scan.nextLine();
-						System.out.println("entrez la nouvelle valeur : ");
-						String catUpdatestString = scan.nextLine();
-						categoryRepository.update(catUpdatestString, catUpdateLong);
-					break;
-				case 11 :// affichage article d'une category par id category
-						System.out.println("-----------------------------------------------------------------------------");
-						displayCategoryFunction(categoryRepository.findAll());
-						System.out.println("----------------------------------------------------------------------------- \n");
-						
-						System.out.println("\n");
-						System.out.println("entrez l'id de la categorie souhaiter : ");
-						Long searchCat = scan.nextLong();
-						scan.nextLine();
-						
-						System.out.println("\n -----------------------------------------------------------------------------");
-						displayArticleFunction(articleRepository.findByCategoryId(searchCat));
-						System.out.println("----------------------------------------------------------------------------- \n");
-					break;
-				case 12 : // retour menu principal
-						leave = true;
-						System.out.println("----------------------------------------------------------------------------->");
-						System.out.println("a bientot ! ");
-						System.out.println("<-----------------------------------------------------------------------------");
-						scan.close();
-					break;
-				default:
-					break;
+							
+						break;
+					case 6 ://modification d'un article par son id
+							System.out.println("entrez l'id de l'article a modifier : ");
+							long idUpdate = scan.nextLong();
+							System.out.println("entrez la description : ");
+							scan.nextLine();
+							String descUpdate = scan.nextLine();
+							System.out.println("entrez la marque : ");
+							String brandUpdate = scan.nextLine();
+							System.out.println("entrez le prix : ");
+							String priceUpdate = scan.nextLine();
+							articleRepository.update(descUpdate, brandUpdate, Integer.parseInt(priceUpdate), idUpdate);
+						break;
+					case 7 ://ajout d'une category
+							System.out.println("entrez le nom de la nouvelle category : ");
+							String newCat = scan.nextLine();
+							categoryRepository.save(new Category(newCat));
+						break;
+					case 8 ://afficher une seul categorie par son nom 
+							System.out.println("entrez le nom de la category : ");
+							String catView = scan.nextLine();
+							
+							System.out.println("-----------------------------------------------------------------------------");
+							System.out.println(categoryRepository.findByName(catView));
+							System.out.println("----------------------------------------------------------------------------- \n");
+						break;
+					case 9 ://suppression d'une categorie par son id
+							System.out.println("-----------------------------------------------------------------------------");
+							displayCategoryFunction(categoryRepository.findAll());
+							System.out.println("----------------------------------------------------------------------------- \n");
+							
+							System.out.println("entrez l'id de la category a supprimer : ");
+							Long removeCat = scan.nextLong();
+							scan.nextLine();
+							System.out.println("etes vous sur de vouloir supprimer cette category ? oui/non");
+							System.out.println(categoryRepository.findById(removeCat));
+							String confirmCatChoice = scan.nextLine();
+							while(!confirmCatChoice.equals("oui") && !confirmCatChoice.equals("non"))
+							{
+								System.out.println("etes vous sur de vouloir supprimer cette category ? oui/non");
+								confirmCatChoice = scan.nextLine();
+							}
+							if(confirmCatChoice.equals("oui"))
+							{
+								categoryRepository.deleteById(removeCat);
+								System.out.println("category supprimer");
+							}
+							
+						break;
+					case 10 ://mise a jour d'une category par son id
+							System.out.println("----------------------------------------------------------------------------- ");
+							displayCategoryFunction(categoryRepository.findAll());
+							System.out.println("----------------------------------------------------------------------------- \n");
+							
+							System.out.println("entrez l'id de la category a modifier : ");
+							Long catUpdateLong = scan.nextLong();
+							scan.nextLine();
+							System.out.println("entrez la nouvelle valeur : ");
+							String catUpdatestString = scan.nextLine();
+							categoryRepository.update(catUpdatestString, catUpdateLong);
+						break;
+					case 11 :// affichage article d'une category par id category
+							System.out.println("-----------------------------------------------------------------------------");
+							displayCategoryFunction(categoryRepository.findAll());
+							System.out.println("----------------------------------------------------------------------------- \n");
+							
+							System.out.println("\n");
+							System.out.println("entrez l'id de la categorie souhaiter : ");
+							Long searchCat = scan.nextLong();
+							scan.nextLine();
+							
+							System.out.println("\n -----------------------------------------------------------------------------");
+							displayArticleFunction(articleRepository.findByCategoryId(searchCat));
+							System.out.println("----------------------------------------------------------------------------- \n");
+						break;
+					case 12 : // retour menu principal
+							leave = true;
+							System.out.println("----------------------------------------------------------------------------->");
+							System.out.println("a bientot ! ");
+							System.out.println("<-----------------------------------------------------------------------------");
+							scan.close();
+						break;
+					default:
+							System.out.println("ENTREZ UN NOMBRE ENTRE 1 ET 12 ");
+						break;
+				}
+			}
+			else
+			{
+				System.out.println("COMMANDE INVALIDE RETAPEZ VOTRE CHOIX");
 			}
 		}
 	}
-//****************************************************************************************************************************************************
+//********************************************************************FUNCTIONS********************************************************************************
 	public void displayMenuFuction(int nb) // fonction affichage du menu pagination
 	{
-		System.out.println("-----------------------------------------------------------------------------\n" +
+		System.out.println("*****************************************************************************\n" +
 								   "EXIT pour sortir \n" +
 								   "PREV pour page precedente \n" +
 								   "NEXT pour page suivante \n" +
 								   "PAGE puis "+nb+" pour afficher "+nb+" articles par page \n" +
-				"----------------------------------------------------------------------------- ");
+							"***************************************************************************** ");
 	}
 	
 	public void displayTableFuction(Page<Article> page) // function affichage articles pagination
 	{
-		System.out.println("-----------------------------------------------------------------------------");
+		System.out.println("*****************************************************************************");
 		for (Article art : page)
 		{
 			System.out.printf("%s  %13s  %18s  %14s  %18s %n", art.getId() , art.getDescription() , art.getBrand() , art.getPrice() , art.getCategory());
 		}
-		System.out.println("-----------------------------------------------------------------------------");
+		System.out.println("*****************************************************************************");
 	}
 	
-	public void choiceUserPaginationFunction( String pageSeven , Integer pageSize , int nbArticleByPage , Pageable numByPage) // function choix user pagination
+	public void choiceUserPaginationFunction( String pageSeven , Integer pageSize , int sevenOrFive , Pageable numByPage) // function choix user pagination
 	{
 		if(pageSeven.equals("PAGE"))
 		{
@@ -248,7 +286,11 @@ public class TpShopSpringVersionApplication implements CommandLineRunner
 			{
 				pageNb = 0;
 				sizePage = pageSize;
-				pagesevenfive = nbArticleByPage;
+				pagesevenfive = sevenOrFive;
+			}
+			else 
+			{
+				System.out.println("COMMANDE INVALIDE ! " + pageSize + " attendu !!!!!!");
 			}
 		}
 		else if (pageSeven.equals("NEXT")) 
@@ -277,25 +319,32 @@ public class TpShopSpringVersionApplication implements CommandLineRunner
 		{
 			paginationStringOut = true;
 		}
+		else 
+		{
+			System.out.println("COMMANDE INVALIDE !");
+		}
 	}
 	
 	public void displayCategoryFunction(List<Category> listCategory)
 	{
-		System.out.println("-----------------------------------------------------------------------------");
+		System.out.println("*****************************************************************************");
 		System.out.printf(" %s %19s %n", "ID","CAT");
 		for( Category cat :  listCategory)
 		{
 			System.out.printf(" %s %20s %n",cat.getId() , cat.getName());
 		}
-		System.out.println("----------------------------------------------------------------------------- ");
+		System.out.println("*****************************************************************************");
 	}
 	
 	public void displayArticleFunction(List<Article> articlelist)
 	{
+		System.out.println("*****************************************************************************");
 		System.out.printf("%s  %17s  %14s  %12s  %12s %n", "ID", "DESCRIPTION" , "MARQUE", "PRIX" , "CAT");
+		System.out.println("*****************************************************************************");
 		for( Article article : articlelist)
 		{
 			System.out.printf("%s  %13s  %18s  %14s  %18s %n", article.getId() , article.getDescription() , article.getBrand() , article.getPrice() , article.getCategory());
 		}
+		System.out.println("*****************************************************************************");
 	}
 }
