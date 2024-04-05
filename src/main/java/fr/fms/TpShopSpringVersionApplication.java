@@ -2,6 +2,9 @@ package fr.fms;
 
 import java.util.List;
 import java.util.Scanner;
+
+import javax.persistence.Column;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -34,8 +37,8 @@ public class TpShopSpringVersionApplication implements CommandLineRunner
 	//@Override
 	public void run(String... args) throws Exception
 	{  
-		
-		buisnessArticle buisnessA = new buisnessArticle();
+		String tableHead = String.format("%s  %17s  %14s  %12s  %12s ", "ID", "DESCRIPTION" , "MARQUE", "PRIX" , "CAT");
+//		buisnessArticle buisnessA = new buisnessArticle();
 		
 		Category smartphone = categoryRepository.save(new Category("smartphone"));
 		Category tablet = categoryRepository.save(new Category("tablet"));
@@ -80,10 +83,10 @@ public class TpShopSpringVersionApplication implements CommandLineRunner
 			{
 				case 1 :
 						System.out.println("-----------------------------------------------------------------------------");
-						System.out.println("ID     DESCRIPTION     MARQUE     PRIX     CATEGORY");
-						for ( Article article : articleRepository.findAll())
+						System.out.println(tableHead);
+						for ( Article art : articleRepository.findAll())
 						{
-							System.out.println(article);
+							System.out.printf("%s  %13s  %18s  %14s  %18s %n", art.getId() , art.getDescription() , art.getBrand() , art.getPrice() , art.getCategory());
 						}
 						System.out.println("----------------------------------------------------------------------------- \n");
 					break;
@@ -102,6 +105,7 @@ public class TpShopSpringVersionApplication implements CommandLineRunner
 							{
 								displayMenuFuction(5);
 								
+								System.out.println(tableHead);
 								displayTableFuction(productRepository.findAll(pageableof5));
 								System.out.println("tapez ici : ");
 								String pageSeven = scan.nextLine();
@@ -122,12 +126,20 @@ public class TpShopSpringVersionApplication implements CommandLineRunner
 									{
 										pageNb ++;
 									}
+									else 
+									{
+										System.out.println("il n'y a plus de page !");
+									}
 								}
 								else if (pageSeven.equals("PREV")) 
 								{
 									if(productRepository.findAll(pageableof5).hasPrevious())
 									{
 										pageNb --;
+									}
+									else 
+									{
+										System.out.println("c'est la premiere page !");
 									}
 								}
 								else if (pageSeven.equals("EXIT")) 
@@ -138,6 +150,8 @@ public class TpShopSpringVersionApplication implements CommandLineRunner
 							else if(pagesevenfive == 2 && paginationStringOut != true)
 							{
 								displayMenuFuction(7);
+								
+								System.out.println(tableHead);
 								displayTableFuction(productRepository.findAll(pageableOf7));
 								System.out.println("tapez ici : ");
 								String pageSeven = scan.nextLine();
@@ -158,12 +172,20 @@ public class TpShopSpringVersionApplication implements CommandLineRunner
 									{
 										pageNb ++;
 									}
+									else 
+									{
+										System.out.println("il n'y a plus de page !");
+									}
 								}
 								else if (pageSeven.equals("PREV")) 
 								{
 									if(productRepository.findAll(pageableof5).hasPrevious())
 									{
 										pageNb --;
+									}
+									else 
+									{
+										System.out.println("c'est la premiere page !");
 									}
 								}
 								else if (pageSeven.equals("EXIT")) 
@@ -294,7 +316,7 @@ public class TpShopSpringVersionApplication implements CommandLineRunner
 		System.out.println("-----------------------------------------------------------------------------");
 		for (Article art : page)
 		{
-			System.out.println(art);
+			System.out.printf("%s  %13s  %18s  %14s  %18s %n", art.getId() , art.getDescription() , art.getBrand() , art.getPrice() , art.getCategory());
 		}
 		System.out.println("-----------------------------------------------------------------------------");
 	}
