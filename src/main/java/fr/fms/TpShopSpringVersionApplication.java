@@ -1,10 +1,15 @@
 package fr.fms;
 
+import java.util.List;
 import java.util.Scanner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
 import fr.fms.buisness.buisnessArticle;
 import fr.fms.dao.ArticleRepository;
 import fr.fms.dao.CategoryRepository;
@@ -29,6 +34,7 @@ public class TpShopSpringVersionApplication implements CommandLineRunner
 	//@Override
 	public void run(String... args) throws Exception
 	{  
+		
 		buisnessArticle buisnessA = new buisnessArticle();
 		
 		Category smartphone = categoryRepository.save(new Category("smartphone"));
@@ -84,52 +90,81 @@ public class TpShopSpringVersionApplication implements CommandLineRunner
 				case 2 :
 						Boolean paginationStringOut = false;
 						int pagesevenfive = 1;
+						int pageNb = 0;
+						
 						while(paginationStringOut != true)
 						{
-							while(pagesevenfive == 1 && paginationStringOut != true)
+							
+							Pageable pageableof5 = PageRequest.of(pageNb, 5);
+							Pageable pageableOf7 = PageRequest.of(pageNb, 7);
+							
+							if(pagesevenfive == 1 && paginationStringOut != true)
 							{
-								System.out.println("-----------------------------------------------------------------------------");
-								System.out.println("EXIT pour sortir \n" +
-												   "PREV pour page precedente \n" +
-												   "NEXT pour page suivante \n" +
-												   "PAGE puis 7 pour afficher 7 articles par page ");
-								System.out.println("-----------------------------------------------------------------------------");
-								System.out.println("-----------------------------------------------------------------------------");
-								for (Article art : productRepository.findAll(ProductRepository.pageableof5))
-								{
-									System.out.println(art);
-								}
-								System.out.println("-----------------------------------------------------------------------------");
+								displayMenuFuction(5);
+								
+								displayTableFuction(productRepository.findAll(pageableof5));
 								System.out.println("tapez ici : ");
 								String pageSeven = scan.nextLine();
-								if(Integer.parseInt(pageSeven) == 7)
+								
+								if(pageSeven.equals("PAGE"))
 								{
-									pagesevenfive = 2;
+									System.out.println("tapez 7 : ");
+									String seven = scan.nextLine();
+									if (Integer.parseInt(seven) == 7 )
+									{
+										pageNb = 0;
+										pagesevenfive = 2;
+									}
+								}
+								else if (pageSeven.equals("NEXT")) 
+								{
+									if(productRepository.findAll(pageableof5).hasNext())
+									{
+										pageNb ++;
+									}
+								}
+								else if (pageSeven.equals("PREV")) 
+								{
+									if(productRepository.findAll(pageableof5).hasPrevious())
+									{
+										pageNb --;
+									}
 								}
 								else if (pageSeven.equals("EXIT")) 
 								{
 									paginationStringOut = true;
 								}
 							}
-							while(pagesevenfive == 2 && paginationStringOut != true)
+							else if(pagesevenfive == 2 && paginationStringOut != true)
 							{
-								System.out.println("-----------------------------------------------------------------------------");
-								System.out.println("EXIT pour sortir \n" +
-												   "PREV pour page precedente \n" +
-												   "NEXT pour page suivante \n" +
-												   "PAGE puis 5 pour afficher 5 articles par page ");
-								System.out.println("-----------------------------------------------------------------------------");
-								System.out.println("-----------------------------------------------------------------------------");
-								for (Article art : productRepository.findAll(ProductRepository.pageableOf7))
-								{
-									System.out.println(art);
-								}
-								System.out.println("-----------------------------------------------------------------------------");
+								displayMenuFuction(7);
+								displayTableFuction(productRepository.findAll(pageableOf7));
 								System.out.println("tapez ici : ");
 								String pageSeven = scan.nextLine();
-								if(Integer.parseInt(pageSeven) == 5)
+								
+								if(pageSeven.equals("PAGE"))
 								{
-									pagesevenfive = 1;
+									System.out.println("tapez 5 : ");
+									String seven = scan.nextLine();
+									if (Integer.parseInt(seven) == 5 )
+									{
+										pageNb = 0;
+										pagesevenfive = 1;
+									}
+								}
+								else if (pageSeven.equals("NEXT")) 
+								{
+									if(productRepository.findAll(pageableof5).hasNext())
+									{
+										pageNb ++;
+									}
+								}
+								else if (pageSeven.equals("PREV")) 
+								{
+									if(productRepository.findAll(pageableof5).hasPrevious())
+									{
+										pageNb --;
+									}
 								}
 								else if (pageSeven.equals("EXIT")) 
 								{
@@ -185,6 +220,7 @@ public class TpShopSpringVersionApplication implements CommandLineRunner
 				case 8 :
 						System.out.println("entrez le nom de la category : ");
 						String catView = scan.nextLine();
+						
 						System.out.println("-----------------------------------------------------------------------------");
 						System.out.println(categoryRepository.findByName(catView));
 						System.out.println("----------------------------------------------------------------------------- \n");
@@ -196,6 +232,7 @@ public class TpShopSpringVersionApplication implements CommandLineRunner
 							System.out.println(cat);
 						}
 						System.out.println("----------------------------------------------------------------------------- \n");
+						
 						System.out.println("entrez l'id de la category a supprimer : ");
 						Long removeCat = scan.nextLong();
 						scan.nextLine();
@@ -216,10 +253,12 @@ public class TpShopSpringVersionApplication implements CommandLineRunner
 							System.out.println(cat);
 						}
 						System.out.println("----------------------------------------------------------------------------- \n");
+						
 						System.out.println("\n");
 						System.out.println("entrez l'id de la categorie souhaiter : ");
 						Long searchCat = scan.nextLong();
 						scan.nextLine();
+						
 						System.out.println("\n");
 						System.out.println("-----------------------------------------------------------------------------");
 						for( Article article : articleRepository.findByCategoryId(searchCat))
@@ -240,5 +279,23 @@ public class TpShopSpringVersionApplication implements CommandLineRunner
 			}
 		}
 	}
+	public void displayMenuFuction(int nb)
+	{
+		System.out.println("-----------------------------------------------------------------------------\n" +
+								   "EXIT pour sortir \n" +
+								   "PREV pour page precedente \n" +
+								   "NEXT pour page suivante \n" +
+								   "PAGE puis "+nb+" pour afficher "+nb+" articles par page \n" +
+				"----------------------------------------------------------------------------- \n");
+	}
 	
+	public void displayTableFuction(Page<Article> page)
+	{
+		System.out.println("-----------------------------------------------------------------------------");
+		for (Article art : page)
+		{
+			System.out.println(art);
+		}
+		System.out.println("-----------------------------------------------------------------------------");
+	}
 }
